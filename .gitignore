@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+
+# venv
+.venv/
+venv/
+ENV/
+env/
+
+# env
+.env
+.env.*
+!.env.example
+
+# os
+.DS_Store
+Thumbs.db
+
+# ide
+.idea/
+.vscode/
+*.iml
+
+# logs / temp
+*.log
+*.tmp
+
+# testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.coverage.xml
+nosetests.xml
+test-results.xml
+
+# alembic
+alembic/*.pyc
+
+# docker
+**/.dockerignore
+
+# local db
+pgdata/
+*.sqlite3
