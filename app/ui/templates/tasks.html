@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>
+  Задачи | {{ user.name }}
+  <span style="border:1px solid #ddd; padding:2px 8px; border-radius:999px; font-size:14px;">
+    {{ "Админ" if user.role.value == "admin" else "Пользователь" }}
+  </span>
+</h2>
+
+<div class="card">
+  <h3>Создать задачу</h3>
+  <form method="post" action="/ui/tasks">
+    <div class="row">
+      <label>
+        Название
+        <input name="title" placeholder="Название" required style="min-width:260px;">
+      </label>
+
+      <label>
+        Приоритет (1–5)
+        <input name="priority" type="number" min="1" max="5" value="3">
+      </label>
+
+      <label>
+        Тема
+        <select name="topic_id">
+          <option value="">—</option>
+          {% for tp in topics %}
+            <option value="{{ tp.id }}">{{ tp.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>
+        Исполнитель
+        <select name="assignee_id">
+          <option value="">—</option>
+          {% for u in users %}
+            <option value="{{ u.id }}">{{ u.name }} ({{ u.email }})</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <button type="submit">Создать</button>
+    </div>
+
+    <div style="margin-top:8px;">
+      <label>Описание</label>
+      <textarea name="description" placeholder="Описание" rows="2" style="width:100%;"></textarea>
+    </div>
+  </form>
+</div>
+
+<table>
+  <thead>
+    <tr>
+  <th>ID</th>
+  <th>Название</th>
+  <th>Приоритет</th>
+  <th>Тема</th>
+  <th>Исполнитель</th>
+  <th>Автор</th>
+  <th>Статус</th>
+  <th>Создана</th>
+  <th>Описание</th>
+  <th>Сохранить</th>
+  <th>Сменить статус</th>
+  <th>Удалить</th>
+</tr>
+  </thead>
+  <tbody>
+  {% for t in tasks %}
+  <tr>
+    <form method="post" action="/ui/tasks/{{ t.id }}/update">
+      <td>{{ t.id }}</td>
+
+      <td>
+        <input name="title" value="{{ t.title }}" required style="width:220px;">
+      </td>
+
+      <td>
+        <input name="priority" type="number" min="1" max="5" value="{{ t.priority }}" style="width:70px;">
+      </td>
+
+      <td>
+        <select name="topic_id">
+          <option value="">—</option>
+          {% for tp in topics %}
+            <option value="{{ tp.id }}" {% if t.topic_id == tp.id %}selected{% endif %}>{{ tp.name }}</option>
+          {% endfor %}
+        </select>
+      </td>
+
+      <td>
+        <select name="assignee_id">
+          <option value="">—</option>
+          {% for u in users %}
+            <option value="{{ u.id }}" {% if t.assignee_id == u.id %}selected{% endif %}>
+              {{ u.name }} ({{ u.email }})
+            </option>
+          {% endfor %}
+        </select>
+      </td>
+
+      <td>{{ t.creator.email }}</td>
+
+      <td>{{ t.status.name }}</td>
+      <td>{{ t.created_at }}</td>
+
+      <td style="max-width:320px;">
+        <input name="description" value="{{ t.description or '' }}" style="width:320px;">
+      </td>
+
+      <td>
+        {% if user.role.value == "admin" or t.creator_id == user.id %}
+          <button type="submit">Сохранить</button>
+        {% else %}
+          —
+        {% endif %}
+      </td>
+    </form>
+
+    <td>
+      <form method="post" action="/ui/tasks/{{ t.id }}/status" class="row">
+        <select name="status_code">
+          {% for s in statuses %}
+            <option value="{{ s.code }}" {% if s.id == t.status_id %}selected{% endif %}>{{ s.name }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">OK</button>
+      </form>
+    </td>
+
+    <td>
+      {% if user.role.value == "admin" or t.creator_id == user.id %}
+      <form method="post" action="/ui/tasks/{{ t.id }}/delete"
+            onsubmit="return confirm('Удалить задачу {{ t.id }}?');">
+        <button type="submit">Удалить</button>
+      </form>
+      {% else %}
+        —
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

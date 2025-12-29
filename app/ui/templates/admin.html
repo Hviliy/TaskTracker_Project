@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Админ-панель</h2>
+
+<div class="card">
+  <h3>Создать тему</h3>
+  <form method="post" action="/ui/admin/topics/create">
+    <div class="row">
+      <label>Название <input name="name" required></label>
+      <label>Описание <input name="description"></label>
+      <button type="submit">Создать</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h3>Темы</h3>
+  <table>
+    <tr><th>ID</th><th>Название</th><th>Описание</th><th>Действия</th></tr>
+    {% for t in topics %}
+      <tr>
+        <td>{{ t.id }}</td>
+        <td>
+          <form method="post" action="/ui/admin/topics/{{ t.id }}/update" class="row">
+            <input name="name" value="{{ t.name }}" required>
+        </td>
+        <td>
+            <input name="description" value="{{ t.description or '' }}">
+        </td>
+        <td class="row">
+            <button type="submit">Сохранить</button>
+          </form>
+
+          <form method="post" action="/ui/admin/topics/{{ t.id }}/delete" onsubmit="return confirm('Удалить тему?');">
+            <button type="submit">Удалить</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="card">
+  <h3>Пользователи</h3>
+  <table>
+    <tr><th>ID</th><th>Email</th><th>Имя</th><th>Роль</th><th>Активен</th><th>Действия</th></tr>
+    {% for u in users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.name }}</td>
+        <td>{{ u.role.value }}</td>
+        <td>{{ "Да" if u.is_active else "Нет" }}</td>
+        <td class="row">
+          <form method="post" action="/ui/admin/users/{{ u.id }}/role" class="row">
+            <select name="role">
+              <option value="user" {% if u.role.value == "user" %}selected{% endif %}>user</option>
+              <option value="admin" {% if u.role.value == "admin" %}selected{% endif %}>admin</option>
+            </select>
+            <button type="submit">Поменять роль</button>
+          </form>
+
+          <form method="post" action="/ui/admin/users/{{ u.id }}/toggle_active" onsubmit="return confirm('Изменить активность?');">
+            <button type="submit">{{ "Отключить" if u.is_active else "Включить" }}</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+</div>
+
+{% endblock %}

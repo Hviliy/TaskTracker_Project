@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>{{ title or "Task Tracker" }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    .row { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f6f6f6; }
+    .card { border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin: 12px 0; }
+    input, select, textarea { padding: 6px; }
+    button { padding: 6px 10px; cursor:pointer; }
+  </style>
+</head>
+<body>
+{% if show_nav is not defined or show_nav %}
+<div class="row">
+  <a href="/ui/tasks">Задачи</a>
+  <a href="/ui/analytics">Аналитика</a>
+    {% if user and user.role.value == "admin" %}
+  <a href="/ui/admin">Админ</a>
+    {% endif %}
+
+  <form method="post" action="/ui/logout" style="margin-left:auto;">
+    <button type="submit">Выйти</button>
+  </form>
+</div>
+<hr/>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+</body>
+</html>
