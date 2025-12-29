@@ -54,7 +54,7 @@ TEST_DATABASE_URL=postgresql+psycopg2://postgres:123@localhost:5432/task_tracker
 SECRET_KEY=сюда сгенерированный ключ
 
 # для смены ролей с пользователя на админа (тестовый)
-ALLOW_ROLE_SELF_ASSIGN=false 
+ALLOW_ROLE_SELF_ASSIGN=true 
 ```
 
 ## 🐘 Запуск PostgreSQL
