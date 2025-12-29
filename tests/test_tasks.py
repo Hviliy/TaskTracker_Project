@@ -61,3 +61,10 @@ def test_list_tasks_sort_and_filter(client):
 
     r = client.get(f"/tasks/{id2}", headers=auth_headers(token))
     assert r.status_code == 200
+
+def test_task_create_priority_validation(client):
+    register(client, "u1", "u1@test.com", "secret123")
+    token = login(client, "u1@test.com", "secret123")
+
+    r = client.post("/tasks", data={"title": "t1", "priority": "0"}, headers=auth_headers(token))
+    assert r.status_code == 422

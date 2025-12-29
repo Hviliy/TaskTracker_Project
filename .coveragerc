@@ -1,0 +1,9 @@
+[run]
+branch = True
+omit =
+    app/ui/*
+    app/ui/router.py
+
+[report]
+show_missing = True
+skip_covered = False
